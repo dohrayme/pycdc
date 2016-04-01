@@ -54,6 +54,7 @@ enum Opcode {
 
 const char* OpcodeName(int opcode);
 int ByteToOpcode(int maj, int min, int opcode);
+int OpcodeToByte(int maj, int min, int opcode);
 
 bool IsConstArg(int opcode);
 bool IsNameArg(int opcode);

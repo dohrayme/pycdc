@@ -4,6 +4,9 @@
 #include "pyc_numeric.h"
 #include "bytecode.h"
 
+extern bool block_DEBUG;
+extern bool stack_DEBUG;
+
 /* Use this to determine if an error occurred (and therefore, if we should
  * avoid cleaning the output tree) */
 static bool cleanBuild;
@@ -43,21 +46,26 @@ PycRef<ASTNode> BuildFromCode(PycRef<PycCode> code, PycModule* mod)
     bool need_try = false;
 
     while (!source.atEof()) {
-#if defined(BLOCK_DEBUG) || defined(STACK_DEBUG)
-        fprintf(stderr, "%-7d", pos);
-    #ifdef STACK_DEBUG
-        fprintf(stderr, "%-5d", (unsigned int)stack_hist.size() + 1);
-    #endif
-    #ifdef BLOCK_DEBUG
-        for (unsigned int i = 0; i < blocks.size(); i++)
-            fprintf(stderr, "    ");
-        fprintf(stderr, "%s (%d)", curblock->type_str(), curblock->end());
-    #endif
-        fprintf(stderr, "\n");
-#endif
-
         curpos = pos;
         bc_next(source, mod, opcode, operand, pos);
+
+        if (block_DEBUG || stack_DEBUG) {
+            fprintf(stderr, "%-7d", curpos);
+            if (stack_DEBUG) {
+                fprintf(stderr, "%-5d", (unsigned int)stack_hist.size() + 1);
+            }
+            if (block_DEBUG) {
+                for (unsigned int i = 0; i < blocks.size(); i++)
+                    fprintf(stderr, "    ");
+                fprintf(stderr, "%s (%d) opcode(%d) byte(%0x):%-24s %d", curblock->type_str()
+                                                                            , curblock->end()
+                                                                            , opcode
+                                                                            , Pyc::OpcodeToByte(mod->majorVer(), mod->minorVer(), opcode)
+                                                                            , Pyc::OpcodeName(opcode)
+                                                                            , operand);
+            }
+            fprintf(stderr, "\n");
+        }
 
         if (need_try && opcode != Pyc::SETUP_EXCEPT_A) {
             need_try = false;

@@ -130,6 +130,45 @@ int Pyc::ByteToOpcode(int maj, int min, int opcode)
     return PYC_INVALID_OPCODE;
 }
 
+int Pyc::OpcodeToByte(int maj, int min, int opcode)
+{
+    switch (maj) {
+    case 1:
+        switch (min) {
+        case 0: return python_10_unmap(opcode);
+        case 1: return python_11_unmap(opcode);
+        case 3: return python_13_unmap(opcode);
+        case 4: return python_14_unmap(opcode);
+        case 5: return python_15_unmap(opcode);
+        case 6: return python_16_unmap(opcode);
+        }
+        break;
+    case 2:
+        switch (min) {
+        case 0: return python_20_unmap(opcode);
+        case 1: return python_21_unmap(opcode);
+        case 2: return python_22_unmap(opcode);
+        case 3: return python_23_unmap(opcode);
+        case 4: return python_24_unmap(opcode);
+        case 5: return python_25_unmap(opcode);
+        case 6: return python_26_unmap(opcode);
+        case 7: return python_27_unmap(opcode);
+        }
+        break;
+    case 3:
+        switch (min) {
+        case 0: return python_30_unmap(opcode);
+        case 1: return python_31_unmap(opcode);
+        case 2: return python_32_unmap(opcode);
+        case 3: return python_33_unmap(opcode);
+        case 4: return python_34_unmap(opcode);
+        case 5: return python_35_unmap(opcode);
+        }
+        break;
+    }
+    return PYC_INVALID_OPCODE;
+}
+
 bool Pyc::IsConstArg(int opcode)
 {
     return (opcode == Pyc::LOAD_CONST_A) || (opcode == Pyc::RESERVE_FAST_A);
