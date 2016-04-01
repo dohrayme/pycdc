@@ -1528,7 +1528,9 @@ PycRef<ASTNode> BuildFromCode(PycRef<PycCode> code, PycModule* mod)
                 if ((curblock->blktype() == ASTBlock::BLK_IF
                         || curblock->blktype() == ASTBlock::BLK_ELSE)
                         && stack_hist.size()
-                        && (mod->verCompare(2, 6) >= 0)) {
+                        && (mod->verCompare(2, 6) >= 0)
+                        && (mod->verCompare(3, 0) < 0)
+                        ) {
                     stack = stack_hist.top();
                     stack_hist.pop();
 
